@@ -371,11 +371,11 @@
    (when-let [result (when-let [{:keys [dom dow] :as cron-map} (make-cron-map cron)]
                        (match [dom dow]
                          [:star :star] (next-date-by-dom now cron-map)
-                         [_ :star] (next-date-by-dom now cron-map)
-                         [:star _] (next-date-by-dow now cron-map)
-                         :else (let [by-dom (next-date-by-dom now cron-map)
-                                     by-dow (next-date-by-dow now cron-map)]
-                                 (-> [by-dom by-dow] sort first))))]
+                         [_ :star]     (next-date-by-dom now cron-map)
+                         [:star _]     (next-date-by-dow now cron-map)
+                         :else         (let [by-dom (next-date-by-dom now cron-map)
+                                             by-dow (next-date-by-dow now cron-map)]
+                                         (-> [by-dom by-dow] sort first))))]
      (assert (not (t/before? result now))
              (format "Next cron resulted in a timestamp that was before the provided timestamp, schedule: %s relative to: %s result: %s" cron now result))
      result))
