@@ -138,5 +138,9 @@
 (deftest weirdness
   (testing "real observed issue"
     (is (= (t/date-time 2025 01 28 05 02 00) (next-date (t/date-time 2025 1 28 05 00 00) "0 2 5 * * *")))
-    (is (= (t/date-time 2025 02 01 00 00 00) (next-date (t/date-time 2025 1 30 03 00 00) "0 12 4 1,2,4 * *")))
-    (is (= (t/date-time 2025 02 02 00 00 00) (next-date (t/date-time 2025 1 30 03 00 00) "0 12 4 2,4 * *")))))
+    ; ;; When we are at the exact timestamp of the cron, we should schedule for
+    ; ;; the NEXT instance.
+    (is (= (t/date-time 2025 01 29 05 02 00) (next-date (t/date-time 2025 1 28 05 02 00) "0 2 5 * * *")))
+    (is (= (t/date-time 2025 02 01 04 12 00) (next-date (t/date-time 2025 1 30 03 00 00) "0 12 4 1,2,4 * *")))
+    (is (= (t/date-time 2025 02 01 04 12 00) (next-date (t/date-time 2025 1 30 03 00 00) "0 12 4 1,2,4 * *")))
+    (is (= (t/date-time 2025 02 02 04 12 00) (next-date (t/date-time 2025 1 30 03 00 00) "0 12 4 2,4 * *")))))
