@@ -1,6 +1,6 @@
-(defproject clj-cron-parse "0.1.5-SNAPSHOT"
+(defproject com.treasuryprime/clj-cron-parse "0.1.5-SNAPSHOT"
   :description "A Clojure library for using cron expressions"
-  :url "https://github.com/finity-ai/clj-cron-parse"
+  :url "https://github.com/treasuryprime/clj-cron-parse"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.11.1"]
@@ -16,4 +16,5 @@
                   ["vcs" "commit"]
                   ["vcs" "tag" "--no-sign"]
                   ["deploy"]]
-  :deploy-repositories {"releases" {:url "https://repo.clojars.org" :creds :gpg :sign-releases false}})
+  :repositories [["github" {:url "https://maven.pkg.github.com/treasuryprime/com.treasuryprime.iso8583"
+                            :username "treasuryprime"}]])
