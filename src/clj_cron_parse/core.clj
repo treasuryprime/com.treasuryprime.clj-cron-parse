@@ -242,8 +242,10 @@
                        ;; first day of the next month instead of the current
                        ;; timestamp
                        (t/plus now (t/months 1) (t/days (- (first xs) (t/day now))))
+                       ;; If our next from above is before the start of the
+                       ;; month then use the start of the next month as the
+                       ;; relative timestamp.
                        ;; WOOOOOOOOOO RECURSION
-
                        (now-with-doms (t/date-time (t/year month)
                                                    (t/month month)
                                                    (t/day month)
