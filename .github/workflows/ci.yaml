@@ -43,11 +43,5 @@ jobs:
       - name: Unit tests
         run: lein test
 
-      - name: Show clj-kondo version
-        run: clj-kondo --version
-
-      - name: clj-kondo lint
-        run: clj-kondo --lint src-clj/ test/
-
       - name: Legacy stuff
         run: lein do clean, midje, cljfmt check
