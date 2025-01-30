@@ -251,7 +251,8 @@
                                                    (t/day month)
                                                    (t/hour now)
                                                    (t/minute now)
-                                                   (t/second now)) dom))))
+                                                   (t/second now))
+                                      dom))))
     {:range x} (t/plus now (t/days 1))
     :else now))
 
