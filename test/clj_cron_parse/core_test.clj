@@ -1,7 +1,9 @@
 (ns clj-cron-parse.core-test
-  (:require [clj-cron-parse.core :refer :all]
-            [midje.sweet :refer :all]
-            [clj-time.core :as t]))
+  (:require
+   [clj-cron-parse.core :refer :all]
+   [clj-time.core :as t]
+   [clojure.test :refer [deftest is testing]]
+   [midje.sweet :refer :all]))
 
 (defchecker date [& date-args]
   (checker [actual]
@@ -132,3 +134,7 @@
 (facts "should handle short month weirdness"
        (next-date (t/date-time 2020 3 30) "0 0 0 1 * *") => (date 2020 04 01 00 00 000)
        (next-date (t/date-time 2020 1 30) "0 0 0 1 * *") => (date 2020 02 01 00 00 000))
+
+(deftest weirdness
+  (testing "real observed issue"
+    (is (= (t/date-time 2025 02 01) (next-date (t/date-time 2025 1 30) "0 12 4 1,2,4 * *")))))
