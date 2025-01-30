@@ -233,7 +233,17 @@
     :W (next-week-dom now)
     ([& xs] :seq) (if-let [ns (next-val (t/day now) xs)]
                     (t/plus now (t/days (- ns (t/day now))))
-                    (t/plus now (t/months 1) (t/days (- (first xs) (t/day now)))))
+                    ;; Takes the current timestamp, adds the next month
+                    (let [month (t/plus now (t/months 1))]
+                      (t/max-date
+                       ;; If the calculated next recurrence is before the first
+                       ;; day of the next month then we are definitely wrong.
+                       ;; Instead calculate the next recurrence relative to the
+                       ;; first day of the next month instead of the current
+                       ;; timestamp
+                       (t/plus now (t/months 1) (t/days (- (first xs) (t/day now))))
+                       ;; WOOOOOOOOOO RECURSION
+                       (now-with-doms (t/first-day-of-the-month (t/year month) (t/month month)) dom))))
     {:range x} (t/plus now (t/days 1))
     :else now))
 
