@@ -128,3 +128,7 @@
        (next-date now "1 0 12 * * *" "Asia/Seoul") => (date 2015 01 02 03 00 01 000)
        (next-date (t/date-time 2015 01 01 12 00 02) "1 0 12 * * *" "America/Sao_Paulo") => (date 2015 01 01 14 00 01 000)
        (next-date (t/date-time 2015 01 01 12 00 02) "1 * * * * *" "America/Sao_Paulo") => (t/date-time 2015 01 01 12 01 01))
+
+(facts "should handle short month weirdness"
+       (next-date (t/date-time 2020 3 30) "0 0 0 1 * *") => (date 2020 04 01 00 00 000)
+       (next-date (t/date-time 2020 1 30) "0 0 0 1 * *") => (date 2020 02 01 00 00 000))
