@@ -1,6 +1,6 @@
-(ns clj-cron-parse.core-test
+(ns com.treasuryprime.clj-cron-parse.core-test
   (:require
-   [clj-cron-parse.core :refer :all]
+   [com.treasuryprime.clj-cron-parse.core :refer :all]
    [clj-time.core :as t]
    [clojure.test :refer [deftest is testing]]
    [midje.sweet :refer :all]))

@@ -1,4 +1,4 @@
-(ns clj-cron-parse.core
+(ns com.treasuryprime.clj-cron-parse.core
   (:require [clojure.string :as s]
             [clj-time.core :as t]
             [clojure.core.match :refer [match]]
