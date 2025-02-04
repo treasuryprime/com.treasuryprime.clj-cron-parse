@@ -1,7 +1,9 @@
 (ns clj-cron-parse.core-test
-  (:require [clj-cron-parse.core :refer :all]
-            [midje.sweet :refer :all]
-            [clj-time.core :as t]))
+  (:require
+   [clj-cron-parse.core :refer :all]
+   [clj-time.core :as t]
+   [clojure.test :refer [deftest is testing]]
+   [midje.sweet :refer :all]))
 
 (defchecker date [& date-args]
   (checker [actual]
@@ -128,3 +130,22 @@
        (next-date now "1 0 12 * * *" "Asia/Seoul") => (date 2015 01 02 03 00 01 000)
        (next-date (t/date-time 2015 01 01 12 00 02) "1 0 12 * * *" "America/Sao_Paulo") => (date 2015 01 01 14 00 01 000)
        (next-date (t/date-time 2015 01 01 12 00 02) "1 * * * * *" "America/Sao_Paulo") => (t/date-time 2015 01 01 12 01 01))
+
+(facts "should handle short month weirdness"
+       (next-date (t/date-time 2020 3 30) "0 0 0 1 * *") => (date 2020 04 01 00 00 000)
+       (next-date (t/date-time 2020 1 30) "0 0 0 1 * *") => (date 2020 02 01 00 00 000))
+
+(deftest weirdness
+  (testing "real observed issue"
+    (is (= (t/date-time 2025 01 28 05 02 00) (next-date (t/date-time 2025 1 28 05 00 00) "0 2 5 * * *")))
+    ; ;; When we are at the exact timestamp of the cron, we should schedule for
+    ; ;; the NEXT instance.
+    (is (= (t/date-time 2025 01 29 05 02 00) (next-date (t/date-time 2025 1 28 05 02 00) "0 2 5 * * *")))
+    (is (= (t/date-time 2025 02 01 04 12 00) (next-date (t/date-time 2025 1 30 03 00 00) "0 12 4 1,2,4 * *")))
+    (is (= (t/date-time 2025 02 01 04 12 00) (next-date (t/date-time 2025 1 30 03 00 00) "0 12 4 1,2,4 * *")))
+    (is (= (t/date-time 2025 02 02 04 12 00) (next-date (t/date-time 2025 1 30 03 00 00) "0 12 4 2,4 * *")))
+
+    (is (= (t/date-time 2025 03 02 04 12 00) (next-date (t/date-time 2025 2 28 03 00 00) "0 12 4 2,4 * *")))
+    (is (= (t/date-time 2025 04 02 04 12 00) (next-date (t/date-time 2025 3 30 03 00 00) "0 12 4 2,4 * *")))
+
+    (is (= (t/date-time 2025 04 02 04 12 00) (next-date (t/date-time 2025 1 30 03 00 00) "0 12 4 2,4 4 *")))))

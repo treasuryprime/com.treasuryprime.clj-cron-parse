@@ -233,7 +233,26 @@
     :W (next-week-dom now)
     ([& xs] :seq) (if-let [ns (next-val (t/day now) xs)]
                     (t/plus now (t/days (- ns (t/day now))))
-                    (t/plus now (t/months 1) (t/days (- (first xs) (t/day now)))))
+                    ;; Takes the current timestamp, adds the next month
+                    (let [month (t/first-day-of-the-month (t/plus now (t/months 1)))]
+                      (t/max-date
+                       ;; If the calculated next recurrence is before the first
+                       ;; day of the next month then we are definitely wrong.
+                       ;; Instead calculate the next recurrence relative to the
+                       ;; first day of the next month instead of the current
+                       ;; timestamp
+                       (t/plus now (t/months 1) (t/days (- (first xs) (t/day now))))
+                       ;; If our next from above is before the start of the
+                       ;; month then use the start of the next month as the
+                       ;; relative timestamp.
+                       ;; WOOOOOOOOOO RECURSION
+                       (now-with-doms (t/date-time (t/year month)
+                                                   (t/month month)
+                                                   (t/day month)
+                                                   (t/hour now)
+                                                   (t/minute now)
+                                                   (t/second now))
+                                      dom))))
     {:range x} (t/plus now (t/days 1))
     :else now))
 
@@ -349,15 +368,17 @@
          "
 
   ([now cron]
-   (if-let [{:keys [dom dow] :as cron-map} (make-cron-map cron)]
-     (match [dom dow]
-       [:star :star] (next-date-by-dom now cron-map)
-       [_ :star] (next-date-by-dom now cron-map)
-       [:star _] (next-date-by-dow now cron-map)
-       :else (let [by-dom (next-date-by-dom now cron-map)
-                   by-dow (next-date-by-dow now cron-map)]
-               (-> [by-dom by-dow] sort first)))
-     nil))
+   (when-let [result (when-let [{:keys [dom dow] :as cron-map} (make-cron-map cron)]
+                       (match [dom dow]
+                         [:star :star] (next-date-by-dom now cron-map)
+                         [_ :star]     (next-date-by-dom now cron-map)
+                         [:star _]     (next-date-by-dow now cron-map)
+                         :else         (let [by-dom (next-date-by-dom now cron-map)
+                                             by-dow (next-date-by-dow now cron-map)]
+                                         (-> [by-dom by-dow] sort first))))]
+     (assert (not (t/before? result now))
+             (format "Next cron resulted in a timestamp that was before the provided timestamp, schedule: %s relative to: %s result: %s" cron now result))
+     result))
 
   ([now cron timezone]
    (if timezone
