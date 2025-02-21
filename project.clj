@@ -7,8 +7,6 @@
                  [clj-time "0.15.2"]
                  [org.clojure/core.match "1.0.0"]]
   :pedantic? :abort
-  :profiles {:dev {:dependencies [[midje "1.10.5"]]
-                   :plugins [[lein-cljfmt "0.8.0"]
-                             [lein-midje "3.2.2"]]}}
+  :profiles {:dev {:plugins [[lein-cljfmt "0.8.0"]]}}
   :repositories [["github" {:url "https://maven.pkg.github.com/treasuryprime/com.treasuryprime.clj-cron-parse"
                             :username "treasuryprime"}]])
