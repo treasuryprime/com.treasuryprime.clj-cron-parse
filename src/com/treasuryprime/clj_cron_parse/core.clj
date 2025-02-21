@@ -370,7 +370,6 @@
   ([now cron]
    (when-let [result (when-let [{:keys [dom dow] :as cron-map} (make-cron-map cron)]
                        (match [dom dow]
-                         ;; This one
                          [:star :star] (next-date-by-dom now cron-map)
                          [_ :star]     (next-date-by-dom now cron-map)
                          [:star _]     (next-date-by-dow now cron-map)
