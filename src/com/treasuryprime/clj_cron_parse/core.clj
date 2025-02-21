@@ -370,18 +370,26 @@
   ([now cron]
    (when-let [result (when-let [{:keys [dom dow] :as cron-map} (make-cron-map cron)]
                        (match [dom dow]
+                         ;; This one
                          [:star :star] (next-date-by-dom now cron-map)
                          [_ :star]     (next-date-by-dom now cron-map)
                          [:star _]     (next-date-by-dow now cron-map)
                          :else         (let [by-dom (next-date-by-dom now cron-map)
                                              by-dow (next-date-by-dow now cron-map)]
                                          (-> [by-dom by-dow] sort first))))]
-     (assert (not (t/before? result now))
-             (format "Next cron resulted in a timestamp that was before the provided timestamp, schedule: %s relative to: %s result: %s" cron now result))
-     result))
-
+     (if (t/before? result now)
+       (next-date result cron nil true)
+       result)))
   ([now cron timezone]
    (if timezone
      (let [tz-now (t/to-time-zone now (t/time-zone-for-id timezone))]
        (t/to-time-zone (next-date tz-now cron) (t/time-zone-for-id "UTC")))
-     (next-date now cron))))
+     (next-date now cron)))
+  ([now cron timezone nested]
+   (let [result (next-date now cron timezone)]
+     (if (t/after? result now)
+       result
+       (do
+         (assert (not nested) (format "Next cron resulted in a timestamp that was before the provided timestamp, schedule: %s relative to: %s result: %s" cron now result))
+         (next-date result cron timezone true))))))
+
