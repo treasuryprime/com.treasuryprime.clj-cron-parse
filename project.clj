@@ -1,4 +1,4 @@
-(defproject com.treasuryprime/clj-cron-parse "1.2.0"
+(defproject com.treasuryprime/clj-cron-parse "1.3.0"
   :description "A Clojure library for using cron expressions"
   :url "https://github.com/treasuryprime/clj-cron-parse"
   :license {:name "Eclipse Public License"
