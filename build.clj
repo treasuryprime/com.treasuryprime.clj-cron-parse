@@ -55,14 +55,21 @@
 (defn deploy
   "Deploy to GitHub Packages. Env vars required:
      CLOJARS_USERNAME -> GitHub username
-     CLOJARS_PASSWORD -> GitHub PAT with `write:packages`
-   (slipset/deps-deploy reads these unconditionally and forwards as basic-auth;
-   they are not actually sent to Clojars - our :repository targets GitHub.)"
+     CLOJARS_PASSWORD -> GitHub PAT with `write:packages`"
   [_]
   (jar nil)
-  (dd/deploy {:installer      :remote
-              :artifact       jar-file
-              :pom-file       (b/pom-path {:lib lib :class-dir class-dir})
-              :sign-releases? false
-              :repository     {"github"
-                               {:url "https://maven.pkg.github.com/treasuryprime/com.treasuryprime.clj-cron-parse"}}}))
+  (let [username (System/getenv "CLOJARS_USERNAME")
+        password (System/getenv "CLOJARS_PASSWORD")
+        blank?   #(or (nil? %) (= "" %))]
+    (when (or (blank? username) (blank? password))
+      (throw (ex-info "Missing CLOJARS_USERNAME or CLOJARS_PASSWORD env var. Set both to a GitHub username and a PAT with write:packages scope."
+                      {:username-set? (not (blank? username))
+                       :password-set? (not (blank? password))})))
+    (dd/deploy {:installer      :remote
+                :artifact       jar-file
+                :pom-file       (b/pom-path {:lib lib :class-dir class-dir})
+                :sign-releases? false
+                :repository     {"github"
+                                 {:url      "https://maven.pkg.github.com/treasuryprime/com.treasuryprime.clj-cron-parse"
+                                  :username username
+                                  :password password}}})))

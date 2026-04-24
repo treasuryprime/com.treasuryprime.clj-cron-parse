@@ -79,7 +79,7 @@ Releases are cut manually from a maintainer's laptop.
 4. Deploy:
    ```bash
    export CLOJARS_USERNAME=<your-github-username>
-   export CLOJARS_PASSWORD=<github-pat-with-write:packages>
+   export CLOJARS_PASSWORD=$(gh auth token) # If your local auth has write:packages
    clojure -T:build deploy
    ```
    (`slipset/deps-deploy` reads `CLOJARS_*` env vars; our `build.clj` points them at GitHub Packages, not Clojars.)
