@@ -8,7 +8,7 @@
  {;; clojure -M:test
   :test
   {:extra-paths ["test"]
-   :extra-deps  {lambdaisland/kaocha           {:mvn/version "1.87.1366"}
+   :extra-deps  {lambdaisland/kaocha           {:mvn/version "1.91.1392"}
                  lambdaisland/kaocha-junit-xml {:mvn/version "1.17.101"}
                  pjstadig/humane-test-output   {:mvn/version "0.11.0"}}
    :main-opts   ["-m" "kaocha.runner"]}
@@ -16,7 +16,7 @@
   ;; clojure -M:test/watch
   :test/watch
   {:extra-paths ["test"]
-   :extra-deps  {lambdaisland/kaocha         {:mvn/version "1.87.1366"}
+   :extra-deps  {lambdaisland/kaocha         {:mvn/version "1.91.1392"}
                  pjstadig/humane-test-output {:mvn/version "0.11.0"}}
    :main-opts   ["-m" "kaocha.runner" "--watch"]}
 
