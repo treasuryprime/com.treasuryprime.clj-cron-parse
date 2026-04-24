@@ -48,4 +48,4 @@ jobs:
         run: clojure -M:cljfmt check
 
       - name: Run tests
-        run: clojure -X:test
+        run: clojure -M:test

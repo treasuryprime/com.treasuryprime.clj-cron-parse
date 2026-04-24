@@ -60,7 +60,8 @@ The `<id>` must match the key used under `:mvn/repos`.
 ## Development
 
 ```bash
-clojure -X:test                 # run unit tests
+clojure -M:test                 # run unit tests (Kaocha)
+clojure -M:test/watch           # run tests in watch mode
 clojure -M:cljfmt check         # lint formatting
 clojure -M:cljfmt fix           # auto-fix formatting
 clojure -T:build clean          # clean target/
